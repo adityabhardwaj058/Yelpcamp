@@ -25,7 +25,11 @@ const helmet = require("helmet");
 
 const dbUrl = process.env.DB_URL;
 // const dbUrl = "mongodb://127.0.0.1:27017/yelp-camp";
-mongoose.connect(dbUrl);
+mongoose.connect(dbUrl, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  ssl: true,
+});
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error"));
@@ -145,14 +149,6 @@ app.use("/campgrounds/:id/reviews", reviewRoutes);
 app.use("/", userRoutes);
 
 app.get("/", (req, res, next) => {
-  if (req.session.count) {
-    req.session.count += 1;
-  } else {
-    req.session.count = 1;
-  }
-  console.log(
-    `The total count is ${req.session.count} and the session id is ${req.sessionID}`
-  );
   res.render("home");
 });
 
